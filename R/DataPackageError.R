@@ -1,5 +1,5 @@
 #' DataPackageError class
-#'
+#' @description Error class for Data Package
 #' @docType class
 #' @importFrom R6 R6Class
 #' @importFrom tableschema.r TableSchemaError
@@ -7,6 +7,7 @@
 #' @keywords data
 #' @return Object of \code{\link{R6Class}} .
 #' @format \code{\link{R6Class}} object.
+#' 
 
 DataPackageError <- R6::R6Class(
   
@@ -16,9 +17,9 @@ DataPackageError <- R6::R6Class(
   
   public = list(
     
-    message=NULL,
+    message = NULL,
     
-    error=NULL,
+    error = NULL,
     
     initialize = function (message, error=NULL){
       self$message <- message

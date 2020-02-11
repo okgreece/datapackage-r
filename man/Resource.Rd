@@ -6,12 +6,217 @@
 \title{Resource class}
 \format{\code{\link{R6Class}} object.}
 \usage{
-Resource
+# Resource.load(descriptor = list(), basePath = NA, strict = FALSE, dataPackage = list())
 }
 \value{
-Object of \code{\link{R6Class}} .
+Object of \code{\link{R6Class}}.
 }
 \description{
-Resource class
+A class for working with data resources. You can read or iterate tabular resources 
+using the \code{iter}/ \code{read} methods and all resource as bytes using 
+\code{rowIter}/ \code{rowRead} methods.
 }
-\keyword{datasets}
+\section{Methods}{
+
+
+\describe{
+
+\item{\code{Resource$new(descriptor = descriptor, strict = strict)}}{
+Use \code{\link{Resource.load}} to instantiate \code{Resource} class.}
+
+
+
+\item{\code{iter(keyed, extended, cast = TRUE, relations = FALSE, stream = FALSE)}}{
+  Only for tabular resources - Iter through the table data and emits rows cast based on table schema. Data casting could be disabled.}
+\itemize{
+ \item{\code{keyed }}{Iter keyed rows - \code{TRUE}/ \code{FALSE}.}  
+ \item{\code{extended }}{Iter extended rows - \code{TRUE}/\code{FALSE}.}
+ \item{\code{cast }}{Disable data casting if \code{FALSE}.}
+ \item{\code{relations }}{If \code{TRUE} foreign key fields will be checked and resolved to its references.}
+ \item{\code{stream }}{Return Readable Stream of table rows if \code{TRUE}.}
+ }
+
+
+\item{\code{read(keyed, extended, cast = TRUE, relations = FALSE, limit)}}{
+  Only for tabular resources. Read the whole table and returns as list of rows. Count of rows could be limited.}
+\itemize{
+ \item{\code{keyed }}{Flag to emit keyed rows - \code{TRUE}/\code{FALSE}.}  
+ \item{\code{extended }}{Flag to emit extended rows - \code{TRUE}/\code{FALSE}.}
+ \item{\code{cast }}{Disable data casting if \code{FALSE}.}
+ \item{\code{relations }}{If \code{TRUE} foreign key fields will be checked and resolved to its references.}
+ \item{\code{limit }}{Integer limit of rows to return if specified.}
+ }
+ 
+\item{\code{checkRelations()}}{Only for tabular resources. It checks foreign keys and raises an exception if there are integrity issues.
+Returns \code{TRUE} if no issues.}
+
+\item{\code{rawIter(stream = FALSE)}}{
+Iterate over data chunks as bytes. If stream is \code{TRUE} Iterator will be returned.}
+\itemize{
+ \item{\code{stream }}{Iterator will be returned.}
+ }
+
+\item{\code{rawRead()}}{Returns resource data as bytes.}
+
+\item{\code{infer()}}{
+Infer resource metadata like name, format, mediatype, encoding, schema and profile. It commits this changes into resource instance.
+Returns resource descriptor.}
+ 
+\item{\code{commit(strict)}}{
+Update resource instance if there are in-place changes in the descriptor. Returns \code{TRUE} on success and \code{FALSE} if not modified.}
+\itemize{
+ \item{\code{strict }}{Boolean - Alter strict mode for further work.}
+ }
+ 
+\item{\code{save(target)}}{
+For now only descriptor will be saved. Save resource to target destination.}
+\itemize{
+ \item{\code{target }}{String path where to save a resource.}
+ }
+}
+}
+
+\section{Properties}{
+
+\describe{
+  \item{\code{valid}}{Returns validation status. It always \code{TRUE} in strict mode.}
+  \item{\code{errors}}{Returns validation errors. It always empty in strict mode.}
+  \item{\code{profile}}{Returns an instance of \code{\link{Profile}} class.}
+  \item{\code{descriptor}}{Returns list of resource descriptor.}
+  \item{\code{name}}{Returns a string of resource name.}
+  \item{\code{inline}}{Returns \code{TRUE} if resource is inline.}
+  \item{\code{local}}{Returns \code{TRUE} if resource is local.}
+  \item{\code{remote}}{Returns \code{TRUE} if resource is remote.}
+  \item{\code{multipart}}{Returns \code{TRUE} if resource is multipart.}
+  \item{\code{tabular}}{Returns \code{TRUE} if resource is tabular.}
+  \item{\code{source}}{Returns a list/string of data/path property respectively.}
+  \item{\code{headers}}{Returns a string of data source headers.}
+  \item{\code{schema}}{Returns a \code{Schema} instance to interact with data schema. Read API documentation - \href{https://github.com/frictionlessdata/tableschema-r#schema}{tableschema.Schema} or \link[tableschema.r]{Schema}}
+ }
+}
+
+\section{Details}{
+
+The Data Resource format describes a data resource such as an individual file or table.
+The essence of a Data Resource is a locator for the data it describes.
+A range of other properties can be declared to provide a richer set of metadata.
+
+Packaged data resources are described in the resources property of the package descriptor. 
+This property \code{MUST} be an array of objects. Each object \code{MUST} follow the \href{https://frictionlessdata.io/specs/data-resource/}{Data Resource specification}.
+}
+
+\section{Language}{
+
+The key words \code{MUST}, \code{MUST NOT}, \code{REQUIRED}, \code{SHALL}, \code{SHALL NOT}, 
+\code{SHOULD}, \code{SHOULD NOT}, \code{RECOMMENDED}, \code{MAY}, and \code{OPTIONAL} 
+in this package documents are to be interpreted as described in \href{https://www.ietf.org/rfc/rfc2119.txt}{RFC 2119}.
+}
+
+\seealso{
+\code{\link{Resource.load}}, 
+\href{https://frictionlessdata.io/specs/data-resource/}{Data Resource Specifications}
+}
+\section{Methods}{
+\subsection{Public methods}{
+\itemize{
+\item \href{#method-new}{\code{Resource$new()}}
+\item \href{#method-iter}{\code{Resource$iter()}}
+\item \href{#method-read}{\code{Resource$read()}}
+\item \href{#method-checkRelations}{\code{Resource$checkRelations()}}
+\item \href{#method-rawIter}{\code{Resource$rawIter()}}
+\item \href{#method-rawRead}{\code{Resource$rawRead()}}
+\item \href{#method-infer}{\code{Resource$infer()}}
+\item \href{#method-commit}{\code{Resource$commit()}}
+\item \href{#method-save}{\code{Resource$save()}}
+\item \href{#method-clone}{\code{Resource$clone()}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-new"></a>}}
+\subsection{Method \code{new()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$new(descriptor, basePath, strict = FALSE, dataPackage = list())}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-iter"></a>}}
+\subsection{Method \code{iter()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$iter(relations = FALSE, options = list())}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-read"></a>}}
+\subsection{Method \code{read()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$read(relations = FALSE, ...)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-checkRelations"></a>}}
+\subsection{Method \code{checkRelations()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$checkRelations()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rawIter"></a>}}
+\subsection{Method \code{rawIter()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$rawIter(stream = FALSE)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-rawRead"></a>}}
+\subsection{Method \code{rawRead()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$rawRead()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-infer"></a>}}
+\subsection{Method \code{infer()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$infer()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-commit"></a>}}
+\subsection{Method \code{commit()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$commit(strict = NULL)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-save"></a>}}
+\subsection{Method \code{save()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$save(target)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clone"></a>}}
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Resource$clone(deep = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
+}

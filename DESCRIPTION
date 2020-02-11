@@ -1,19 +1,21 @@
 Package: datapackage.r
 Type: Package
-Title: 'R Data Package'
-Version: 0.1.0
-Date: 2017-07-01
-Author: c(person("Kleanthis", "Koupidis", email = "koupidis.okfgr@gmail.com", role = c("aut", "cre"), 
-            person("Lazaros", "Ioannidis", email = "larjohn@gmail.com", role = "cre"))
-            person("Charalampos", "Bratsas", email = "charalampos.bratsas@okfn.org", role = "aut"))
-Maintainer: Open Knowledge Greece <info@okfn.gr>
-Description: A library for working with Data Package (<http://frictionlessdata.io/specs/data-package/>).
+Title: Data Package 'Frictionless Data'
+Version: 1.3.0
+Date: 2020-02-11
+Authors@R: c(person("Kleanthis", "Koupidis", email = "koupidis@okfn.gr", role = c("aut", "cre")), 
+            person("Lazaros", "Ioannidis", email = "larjohn@gmail.com", role = "aut"),
+            person("Charalampos", "Bratsas", email = "cbratsas@math.auth.gr", role = "aut"),
+            person("Open Knowledge International", email = "info@okfn.org", role = "cph"))
+Maintainer: Kleanthis Koupidis <koupidis@okfn.gr>
+Description: Work with 'Frictionless Data Packages' (<https://frictionlessdata.io/specs/data-package/>). Allows to load and validate any descriptor for a data package profile, create and modify descriptors and provides expose methods for reading and streaming data in the package. When a descriptor is a 'Tabular Data Package', it uses the 'Table Schema' package (<https://CRAN.R-project.org/package=tableschema.r>) and exposes its functionality, for each resource object in the resources field.
+URL: https://github.com/frictionlessdata/datapackage-r
 License: MIT + file LICENSE
+BugReports: https://github.com/frictionlessdata/datapackage-r/issues
 Encoding: UTF-8
 LazyData: true
 Imports:
     config, 
-    devtools, 
     future, 
     httr, 
     iterators, 
@@ -30,20 +32,18 @@ Imports:
     urltools, 
     utils, 
     V8
-Remotes: okgreece/tableschema-r
 Suggests:
     covr,
-    crul,
+    curl,
     data.table,
     DBI,
+    devtools, 
     foreach,
     httptest,
     knitr,
-    mockery,
     rmarkdown,
     RSQLite,
-    testthat,
-    webmockr
+    testthat
 Collate: 
     'DataPackageError.R'
     'Package.R'
@@ -51,9 +51,10 @@ Collate:
     'profile.R'
     'binary.readable.connection.r'
     'binary.readable.r'
+    'datapackage.r.R'
     'infer.R'
     'is.valid.R'
     'resource.R'
     'validate.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 7.0.0
 VignetteBuilder: knitr

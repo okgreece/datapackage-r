@@ -2,17 +2,111 @@
 % Please edit documentation in R/Package.R
 \name{Package.load}
 \alias{Package.load}
-\title{Package.load}
+\title{Instantiate \code{Data Package} class}
 \usage{
 Package.load(descriptor = list(), basePath = NA, strict = FALSE)
 }
 \arguments{
-\item{descriptor}{descriptor}
+\item{descriptor}{Data package descriptor as local path, url or object.}
 
-\item{basePath}{basePath}
+\item{basePath}{Base path for all relative paths}
 
-\item{strict}{strict}
+\item{strict}{Strict flag to alter validation behavior. 
+Setting it to \code{TRUE} leads to throwing errors on any operation with invalid descriptor.}
 }
 \description{
-Package.load
+Constructor to instantiate \code{Package} class.
+}
+\examples{
+
+# Load local descriptor
+descriptor <- system.file('extdata/dp1/datapackage.json', 
+                         package = "datapackage.r")
+dataPackage <- Package.load(descriptor)
+dataPackage$descriptor
+
+
+# Retrieve Package Descriptor
+descriptor2 <- '{"resources": [{"name": "name", "data": ["data"]}]}'
+dataPackage2 <- Package.load(descriptor2)
+dataPackage2$descriptor
+
+# Expand Resource Descriptor
+descriptor3 <- helpers.from.json.to.list('{"resources": 
+                                         [{
+                                          "name": "name",
+                                          "data": ["data"]
+                                          }]
+                                        }')
+
+dataPackage3 <- Package.load(descriptor3)
+dataPackage3$descriptor
+
+
+# Expand Tabular Resource Schema
+descriptor4 <- helpers.from.json.to.list('{
+                                      "resources": [{
+                                        "name": "name",
+                                        "data": ["data"],
+                                        "profile": "tabular-data-resource",
+                                        "schema": {
+                                          "fields": [{
+                                            "name": "name"
+                                          }]
+                                        }
+                                      }]
+                                      }')
+
+dataPackage4 <- Package.load(descriptor4)
+dataPackage4$descriptor
+
+
+# Expand Tabular Resource Dialect
+descriptor5 <- helpers.from.json.to.list('{
+                                         "resources": [{
+                                           "name": "name",
+                                           "data": ["data"],
+                                           "profile": "tabular-data-resource",
+                                           "dialect": {
+                                             "delimiter": "custom"
+                                             }
+                                           }]
+                                         }')
+
+dataPackage5 <- Package.load(descriptor5)
+dataPackage5$descriptor
+
+
+# Add, Get and Remove Package Resources
+descriptor6 <- helpers.from.json.to.list(
+       system.file('extdata/dp1/datapackage.json', 
+                     package = "datapackage.r"))
+dataPackage6 <- Package.load(descriptor6)
+resource6 <- dataPackage6$addResource(
+        helpers.from.json.to.list('{"name": "name", "data": ["test"]}'))
+dataPackage6$resources[[2]]$source
+# Get resource
+dataPackage6$getResource('name')
+# Remove resource
+dataPackage6$removeResource('name')
+dataPackage6$getResource('name')
+
+
+
+# Modify and Commit Data Package
+descriptor7 <- helpers.from.json.to.list(
+        '{"resources": [{"name": "name", "data": ["data"]}]}')
+dataPackage7 <- Package.load(descriptor7)
+dataPackage7$descriptor$resources[[1]]$name <- 'modified'
+## Name did not modified.
+dataPackage7$resources[[1]]$name
+## Should commit the changes
+dataPackage7$commit() # TRUE - successful commit 
+
+dataPackage7$resources[[1]]$name
+
+}
+\seealso{
+\code{\link{Package}}, 
+\href{https://frictionlessdata.io/specs/data-package/#specification}{Data Package Specifications}
 }
